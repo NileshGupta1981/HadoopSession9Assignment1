@@ -1,0 +1,11 @@
+petroldata = LOAD 'Petrol.txt' using PigStorage(',') AS (DISTRICT_ID:chararray,DISTRIBUTOR_NAME:chararray,BUY_RATE:chararray,SELL_RATE:chararray,VOLUMEINT:int,VOLUMEOUT:int,YEAR:int);
+petrolsold = group petroldata by DISTRIBUTOR_NAME;
+petrolsoldbydistributor = foreach petrolsold generate group , SUM (petroldata.VOLUMEOUT);
+petrolsoldbydistributorid = foreach distributorid generate group,SUM(petroldata.VOLUMEOUT) as volume;
+distributorbyvolume = order petrolsoldbydistributorid by volume desc;
+top10distributor = limit distributorbyvolume 10;
+display = foreach petroldata generate DISTRICT_ID, VOLUMEOUT, YEAR;
+yeardata = order display by VOLUMEOUT desc;
+top10year = limit yeardata 10;
+yeardataleast = order display by VOLUMEOUT;
+leastamountseller = limit yeardataleast 1;
